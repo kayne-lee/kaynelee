@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Briefcase, GraduationCap, Code, Wrench, Heart, X, Calendar, Users } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { SectionCard } from "@/components/SectionCard";
+import IconCloud from "@/components/IconCloud";
 
 type Section = "experience" | "education" | "projects" | "techstack" | "hobbies" | "current" | "extracurriculars" | null;
 type ConcreteSection = Exclude<Section, null>;
@@ -23,6 +24,194 @@ type OverlayRect = {
 
 const CONTAINER_RADIUS = 24;
 const ANIMATION_DURATION_MS = 450;
+
+// Database for section content
+const sectionData = {
+  experience: [
+    {
+      id: 1,
+      title: "Software Developer Intern",
+      company: "IBM",
+      period: "September 2025 - Present",
+      description: "Scaled an agentic AI platform to over five thousand users by orchestrating complex pipelines with LangChain and implementing dual-mode retrieval using both vector and keyword search on Elasticsearch. This significantly improved response speed and increased the relevance of answers returned to users. To ensure stability and reliable deployments, I built a multi-layer end-to-end testing suite that covered the frontend, backend, and LLM response quality while also introducing a robust staging CI/CD pipeline with gated validation. This created a safer release process and improved overall product quality.",
+      image: '/ibm.png', // Add image path here
+      highlights: []
+    },
+    {
+      id: 2,
+      title: "Founding Engineer",
+      company: "Advisor Score",
+      period: "March 2025 - Present",
+      description: "Improved performance by re-architecting a full stack advisor grading application into AWS Lambda microservices, which reduced load times by eighty percent and created a noticeably smoother user experience with faster report generation. I also normalized more than fifteen thousand holdings using semantic search to disambiguate fund names and enforced structured outputs with LangGraph schemas, backed by staging CI/CD tests. This resulted in highly accurate, schema valid reports and a more reliable data pipeline.",
+      image: '/as.png',
+      highlights: []
+    },
+    {
+      id: 3,
+      title: "Software Engineer Intern",
+      company: "SafetyPower",
+      period: "May 2025 - August 2025",
+      description: "Reduced project tracking time by half by launching a Django MVC system that supported more than one hundred and fifty active projects through Dockerized Linux deployments, creating a reliable and scalable foundation for operations. I also rolled out an internal LLM and RAG portal to over two hundred employees with curated indexing and access controls, which made finding the right information much faster and led to a major improvement in team decision making. This helped shorten knowledge lookup time by seventy percent and created smoother collaboration across different groups.",
+      image: '/sp.jpg',
+      highlights: []
+    },
+    {
+      id: 4,
+      title: "Software Engineer Intern",
+      company: "STraffic America",
+      period: "May 2024 - August 2024",
+      description: "Achieved a detection accuracy of ninety seven percent was achieved on over three hundred thousand images by training and calibrating YOLOv10X across San Francisco and Washington, D.C. camera feeds, enabling a ten million dollar revenue recovery pipeline. Iteration speed was accelerated through the orchestration of a complete vision ETL process covering ingestion, cleaning, normalization, annotation, and augmentation, which resulted in fully automated retraining workflows and faster model improvement cycles.",
+      image: '/st.png',
+      highlights: []
+    },
+
+  ],
+  projects: [
+    {
+      id: 1,
+      title: "Nucleus: The All-in-One Student Productivity Hub",
+      description: "Built by students for students. Nucleus parses syllabi to pull key dates and deliverables, auto-generates a weekly task view, lets you add custom task tiles, syncs deadlines to your calendar, and tracks grades with what-if scenarios. React frontend talks to a Spring Boot API and a Node email service, packaged with Docker and secured with JWT.",
+      tech: ["React", "Spring Boot", "Java 17", "Node.js", "SMTP", "PostgreSQL", "Docker", "JWT"],
+      link: "github.com/kayne-lee/nucleusapp",
+      image: 'nucleus.png'
+    },
+    {
+      id: 2,
+      title: "Computer Vision Keyboard",
+      description: "Developed a Python application using OpenCV and MediaPipe that enables hands-free typing by recognizing hand gestures through a webcam. Integrated a virtual keyboard with predictive text and auto-correction, achieving 95% gesture accuracy and a 30% increase in typing speed for users with limited mobility. The system supports customizable layouts, gesture sensitivity, and multiple languages for a responsive and accessible user experience.",
+      tech: ["Python", "OpenCV", "MediaPipe"],
+      link: "github.com/kayne-lee/Computer-Vision-Keyboard",
+      image: 'cv.png'
+    },
+    {
+      id: 3,
+      title: "Caption Generator",
+      description: "Developed a Next.js application that enables user-generated video uploads, integrating Amazon S3 for efficient storage and achieving a 50% reduction in server load and 20% faster upload speeds. Implemented a dynamic captioning feature using Amazon Transcribe, allowing users to personalize captions with adjustable fonts, colors, and positioning. The system provides a smooth video-to-text conversion pipeline with customizable styling options.",
+      tech: ["AWS", "Next.js", "S3", "Amazon Transcribe"],
+      link: "github.com/kayne-lee/Caption-Creator",
+      image: 'cg.png'
+    },
+    {
+      id: 4,
+      title: "NumerAI Model",
+      description: "Developped a ML model to participate in the NumerAI tournament to trade crypto currencies. Currently have a 12% profit and ranked top 25 in the season. Used NumerAI's API to parse and organize the data and then used a LightGBM model to process the data given by NumerAI.",
+      tech: ["Python", "LightGBM", "NumerAI"],
+      link: "github.com/kayne-lee/NumerAI-Model",
+      image: 'nm.png'
+    }
+  ],
+  hobbies: [
+    {
+      id: 1,
+      title: "Football",
+      description: "Varsity High School Football Team",
+      image: '/Football.png'
+    },
+    {
+      id: 2,
+      title: "Hockey",
+      description: "Kincardine Minor Hockey Team & Guelph Gryphons Hockey Team",
+      image: '/Hockey.png'
+    },
+    {
+      id: 3,
+      title: "Skating",
+      description: "Love skateboarding and longboarding. It's a great way to stay active and cruise around the city.",
+      image: '/Skate.png'
+    },
+    {
+      id: 4,
+      title: "Shoe Collection",
+      description: "Love collecting shoes and adding new ones to my collection. It's a great way to express my style and personality. (Air Jordan 1 Obsidian's are my favorite)",
+      image: '/Shoe.png'
+    },
+    {
+      id: 5,
+      title: "Fitness & Working Out",
+      description: "Dedicated to maintaining a healthy lifestyle through regular gym sessions, weightlifting, and various fitness routines.",
+      image: '/Workout.png'
+    },
+  ],
+  extracurriculars: [
+    {
+      id: 1,
+      title: "Director of Developers",
+      organization: "QTMA",
+      period: "March 2025 - Present",
+      description: "Improved on-time delivery across 4 teams by instituting weekly planning, design/code reviews, and mentoring 10+ engineers, resulting in projects aligned with organizational goals.",
+      image: 'QTMA.png'
+    },
+    {
+      id: 2,
+      title: "Product Team",
+      organization: "QMIND",
+      period: "2023 - 2024",
+      description: "Engineered the QMIND.ca website. Implemented the front end using Next.js and backend system of Supabase to allow users to sign in with JWT authentication system and submit their projects for display on the website.",
+      image: 'QMIND.png'
+    },
+    {
+      id: 3,
+      title: "iCon",
+      organization: "iCons",
+      period: "2023 - 2025",
+      description: "Operated after ILC administration hours to keep the facility open to students promote a positive studying and learning atmosphere, and to act as a resource to undergraduate students for academic courses.",
+      image: 'ICONS.png'
+    },
+    
+  ],
+  current: {
+    projects: [
+      {
+        id: 1,
+        title: "Advisor Score",
+        description: "Working on deploying advisor score soon, then focusing on learning and studying more ML stuff.",
+        tech: ["AWS", "LangChain", "LLMs"],
+        image: null
+      },
+      {
+        id: 2,
+        title: "ML Learning",
+        description: "Diving deeper into machine learning concepts and building AI agents.",
+        tech: ["Python", "ML", "AI"],
+        image: null
+      }
+    ],
+    gymProgress: [
+      { label: "Current Split", value: "Upper, Lower, Chest/Back, Shoulders/Arms, Lower, Upper, Rest" },
+      { label: "Focus", value: "Progressive Overload" },
+      { label: "Goal", value: "Muscle Definition" },
+      { label: "Favourite Exercise", value: "Dumbell Incline Bench Press" }
+    ],
+    books: [
+      {
+        id: 1,
+        title: "Atomic Habits",
+        author: "James Clear",
+        description: "Building good habits and breaking bad ones.",
+        progress: 50,
+        image: 'ah.jpg'
+      },
+      {
+        id: 2,
+        title: "Principles of Building AI Agents",
+        author: "Sam Bhagwat",
+        description: "2nd edition by Sam Bhagwat, cofounder and CEO Mastra.ai. Deep dive into AI agent development.",
+        progress: 40,
+        image: 'aia.jpg'
+      }
+    ],
+    music: [
+      { title: "crushing", artist: "Sombr", link: "https://open.spotify.com/search/crushing%20sombr" },
+      { title: "Crazy", artist: "BUNT. and Myles Lloyd", link: "https://open.spotify.com/search/crazy%20bunt" }
+    ],
+    focusAreas: [
+      "Diving into Quantt",
+      "Finding new spots in Toronto",
+      "Experimenting with AI/ML tools",
+      "Building AI agents"
+    ]
+  }
+};
 
 const Index = () => {
   const gridRef = useRef<HTMLDivElement>(null);
@@ -49,15 +238,15 @@ const Index = () => {
     {
       id: "experience",
       title: "Professional Experience",
-      metric: "3",
+      metric: "4",
       metricLabel: "Positions",
       icon: Briefcase,
-      itemCount: 3,
+      itemCount: sectionData.experience.length,
     },
     {
       id: "education",
       title: "Education",
-      metric: "Current",
+      metric: "Queen's University",
       metricLabel: "Computer Engineering",
       icon: GraduationCap,
       itemCount: 1,
@@ -65,10 +254,10 @@ const Index = () => {
     {
       id: "projects",
       title: "Projects",
-      metric: "12+",
+      metric: "4",
       metricLabel: "Built & Deployed",
       icon: Code,
-      itemCount: 4,
+      itemCount: sectionData.projects.length,
     },
     {
       id: "techstack",
@@ -84,7 +273,7 @@ const Index = () => {
       metric: "Beyond",
       metricLabel: "The Code",
       icon: Heart,
-      itemCount: 6,
+      itemCount: sectionData.hobbies.length,
     },
     {
       id: "current",
@@ -92,15 +281,15 @@ const Index = () => {
       metric: "Active",
       metricLabel: "Today",
       icon: Calendar,
-      itemCount: 3,
+      itemCount: sectionData.current.projects.length + sectionData.current.books.length,
     },
     {
       id: "extracurriculars",
       title: "Extracurriculars",
-      metric: "5+",
+      metric: "3",
       metricLabel: "Activities",
       icon: Users,
-      itemCount: 5,
+      itemCount: sectionData.extracurriculars.length,
     },
   ];
 
@@ -125,75 +314,32 @@ const Index = () => {
       case "experience":
         return (
           <div className="space-y-6">
-              <div className="border-l-2 border-accent pl-6 space-y-2">
+            {sectionData.experience.map((job, index) => (
+              <div key={job.id} className={`border-l-2 ${index === 0 ? 'border-accent' : 'border-muted'} pl-6 space-y-2`}>
                 <div className="flex gap-4 items-start">
-                  <div className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-gradient-to-br from-accent/20 to-accent/40">
-                    <div className="w-full h-full flex items-center justify-center">
-                      <span className="text-2xl text-accent font-bold">1</span>
-                    </div>
+                  <div className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden">
+                    {job.image ? (
+                      <img src={job.image} alt={job.title} className="w-full h-full object-contain" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <span className="text-2xl text-accent font-bold">{job.id}</span>
+                      </div>
+                    )}
                   </div>
                   <div className="flex-1 space-y-2">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="text-2xl font-serif font-semibold">Software Engineer Intern</h3>
-                        <p className="text-accent font-medium">Tech Company Inc.</p>
+                        <h3 className="text-2xl font-serif font-semibold">{job.title}</h3>
+                        <p className={index === 0 ? "text-accent font-medium" : "text-muted-foreground font-medium"}>{job.company}</p>
                       </div>
-                      <span className="text-muted-foreground">2024 - Present</span>
+                      <span className="text-muted-foreground">{job.period}</span>
                     </div>
-                    <p className="text-muted-foreground leading-relaxed">
-                      Developed full-stack applications using React, Node.js, and PostgreSQL. 
-                      Collaborated with cross-functional teams to deliver high-quality software solutions.
-                    </p>
+                    <p className="text-muted-foreground leading-relaxed">{job.description}</p>
                   </div>
                 </div>
               </div>
-
-              <div className="border-l-2 border-muted pl-6 space-y-2">
-                <div className="flex gap-4 items-start">
-                  <div className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-gradient-to-br from-muted/20 to-muted/40">
-                    <div className="w-full h-full flex items-center justify-center">
-                      <span className="text-2xl text-muted-foreground font-bold">2</span>
-                    </div>
-                  </div>
-                  <div className="flex-1 space-y-2">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="text-2xl font-serif font-semibold">Research Assistant</h3>
-                        <p className="text-muted-foreground font-medium">University Lab</p>
-                      </div>
-                      <span className="text-muted-foreground">2023 - 2024</span>
-                    </div>
-                    <p className="text-muted-foreground leading-relaxed">
-                      Conducted research on machine learning algorithms and their applications 
-                      in computer vision. Published findings in academic conferences.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-l-2 border-muted pl-6 space-y-2">
-                <div className="flex gap-4 items-start">
-                  <div className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-gradient-to-br from-muted/20 to-muted/40">
-                    <div className="w-full h-full flex items-center justify-center">
-                      <span className="text-2xl text-muted-foreground font-bold">3</span>
-                    </div>
-                  </div>
-                  <div className="flex-1 space-y-2">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="text-2xl font-serif font-semibold">Teaching Assistant</h3>
-                        <p className="text-muted-foreground font-medium">Computer Science Department</p>
-                      </div>
-                      <span className="text-muted-foreground">2022 - 2023</span>
-                    </div>
-                    <p className="text-muted-foreground leading-relaxed">
-                      Assisted in teaching Data Structures and Algorithms course. 
-                      Held office hours and graded assignments for 100+ students.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            ))}
+          </div>
         );
 
       case "education":
@@ -203,22 +349,20 @@ const Index = () => {
               <div className="flex justify-between items-start">
                 <div>
                   <h3 className="text-2xl font-serif font-semibold">B.S. Computer Engineering</h3>
-                  <p className="text-accent font-medium">University Name</p>
+                  <p className="text-accent font-medium">Queen's University</p>
                 </div>
-                <span className="text-muted-foreground">2021 - 2025</span>
+                <span className="text-muted-foreground">September 2022 - April 2027</span>
               </div>
-              <p className="text-lg text-muted-foreground">GPA: 3.8/4.0</p>
               <div className="space-y-2 mt-4">
                 <p className="font-medium">Relevant Coursework:</p>
                 <ul className="grid grid-cols-2 gap-2 text-muted-foreground">
                   <li>• Data Structures & Algorithms</li>
                   <li>• Computer Architecture</li>
                   <li>• Operating Systems</li>
+                  <li>• Object-Oriented Programming</li>
+                  <li>• Software Development</li>
                   <li>• Database Systems</li>
-                  <li>• Machine Learning</li>
-                  <li>• Software Engineering</li>
                   <li>• Computer Networks</li>
-                  <li>• Web Development</li>
                 </ul>
               </div>
             </div>
@@ -226,180 +370,115 @@ const Index = () => {
             <div className="border-l-2 border-muted pl-6 space-y-2">
               <h3 className="text-xl font-serif font-semibold">Honors & Awards</h3>
               <ul className="space-y-2 text-muted-foreground">
-                <li>• Dean's List (All Semesters)</li>
-                <li>• Academic Excellence Scholarship</li>
-                <li>• Hackathon Winner - University Tech Fest 2023</li>
-                <li>• Best Project Award - Software Engineering Course</li>
+                <li>• Queen’s University Excellence Scholarship</li>
+                <li>• OKBA Excellence Scholarship</li>
+                <li>• Pitch Competition Winner - QTMA McKinsey Pitch Competition </li>
               </ul>
             </div>
           </div>
         );
 
       case "projects":
-        const projects = [
-          {
-            title: "Full-Stack E-Commerce Platform",
-            description: "Built a complete e-commerce solution with React, Node.js, and MongoDB. Features include user authentication, payment integration, and real-time inventory management.",
-            tech: ["React", "Node.js", "MongoDB", "Stripe"],
-            link: "github.com/username/ecommerce"
-          },
-          {
-            title: "Machine Learning Image Classifier",
-            description: "Developed a CNN-based image classification model achieving 95% accuracy on CIFAR-10 dataset. Deployed using Flask and Docker.",
-            tech: ["Python", "TensorFlow", "Flask", "Docker"],
-            link: "github.com/username/ml-classifier"
-          },
-          {
-            title: "Real-Time Chat Application",
-            description: "WebSocket-based chat app with features like group chats, file sharing, and message encryption. Built with React and Socket.io.",
-            tech: ["React", "Socket.io", "Express", "PostgreSQL"],
-            link: "github.com/username/chat-app"
-          },
-          {
-            title: "Task Management System",
-            description: "Collaborative project management tool with drag-and-drop interface, notifications, and team analytics dashboard.",
-            tech: ["Vue.js", "Firebase", "Tailwind CSS"],
-            link: "github.com/username/task-manager"
-          }
-        ];
-
         return (
           <div className="grid gap-6">
-            {projects.map((project, index) => (
-                <div key={index} className="border border-border rounded-lg p-6 hover:border-accent transition-smooth">
-                  <div className="flex gap-4 items-start">
-                    <div className="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden bg-gradient-to-br from-accent/20 to-accent/40">
+            {sectionData.projects.map((project) => (
+              <div key={project.id} className="border border-border rounded-lg p-6 hover:border-accent transition-smooth">
+                <div className="flex gap-4 items-start">
+                  <div className="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden">
+                    {project.image ? (
+                      <img src={project.image} alt={project.title} className="w-full h-full object-contain" />
+                    ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <span className="text-3xl text-accent font-bold">{index + 1}</span>
+                        <span className="text-3xl text-accent font-bold">{project.id}</span>
                       </div>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-serif font-semibold mb-2">{project.title}</h3>
+                    <p className="text-muted-foreground mb-4 leading-relaxed">{project.description}</p>
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {project.tech.map((tech) => (
+                        <span key={tech} className="px-3 py-1 bg-secondary text-sm rounded-full">
+                          {tech}
+                        </span>
+                      ))}
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-2xl font-serif font-semibold mb-2">{project.title}</h3>
-                      <p className="text-muted-foreground mb-4 leading-relaxed">{project.description}</p>
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        {project.tech.map((tech) => (
-                          <span key={tech} className="px-3 py-1 bg-secondary text-sm rounded-full">
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-                      <a href={`https://${project.link}`} className="text-accent hover:underline text-sm">
-                        View on GitHub →
-                      </a>
-                    </div>
+                    <a href={`https://${project.link}`} className="text-accent hover:underline text-sm">
+                      View on GitHub →
+                    </a>
                   </div>
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
         );
 
       case "techstack":
+        // Technology slugs for Simple Icons (SimpleIcon slug format)
+        const techSlugs = [
+          // Languages
+          "c",
+          "cplusplus",
+          "css3",
+          "html5",
+          "java",
+          "javascript",
+          "python",
+          "ruby",
+          "sqlite",
+          "typescript",
+          // Frameworks
+          "django",
+          "fastapi",
+          "flask",
+          "nextdotjs",
+          "nodedotjs",
+          "php",
+          "react",
+          "rubyonrails",
+          "spring",
+          // Developer Tools
+          "amazonaws",
+          "microsoftazure",
+          "git",
+          "apachehadoop",
+          "mongodb",
+          "postgresql",
+          "powerbi",
+          "tableau",
+          "visualstudio",
+          "docker",
+          "kubernetes",
+        ];
+
         return (
-          <div className="space-y-8">
-            <div className="space-y-6">
-              <div>
-                <h3 className="text-2xl font-serif font-semibold mb-4">Languages</h3>
-                <div className="flex flex-wrap gap-3">
-                  {["JavaScript", "TypeScript", "Python", "Java", "C++", "SQL", "Go"].map((tech) => (
-                    <span key={tech} className="px-4 py-2 bg-secondary border border-border rounded-lg font-medium">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-2xl font-serif font-semibold mb-4">Frontend</h3>
-                <div className="flex flex-wrap gap-3">
-                  {["React", "Vue.js", "Next.js", "Tailwind CSS", "Redux", "HTML5", "CSS3"].map((tech) => (
-                    <span key={tech} className="px-4 py-2 bg-secondary border border-border rounded-lg font-medium">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-2xl font-serif font-semibold mb-4">Backend</h3>
-                <div className="flex flex-wrap gap-3">
-                  {["Node.js", "Express", "Django", "Flask", "GraphQL", "REST APIs"].map((tech) => (
-                    <span key={tech} className="px-4 py-2 bg-secondary border border-border rounded-lg font-medium">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-2xl font-serif font-semibold mb-4">Database & Cloud</h3>
-                <div className="flex flex-wrap gap-3">
-                  {["PostgreSQL", "MongoDB", "Redis", "AWS", "Docker", "Kubernetes", "Firebase"].map((tech) => (
-                    <span key={tech} className="px-4 py-2 bg-secondary border border-border rounded-lg font-medium">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-2xl font-serif font-semibold mb-4">Tools & Other</h3>
-                <div className="flex flex-wrap gap-3">
-                  {["Git", "GitHub", "VS Code", "Figma", "Postman", "Linux"].map((tech) => (
-                    <span key={tech} className="px-4 py-2 bg-secondary border border-border rounded-lg font-medium">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
+          <div className="w-full h-[600px] overflow-hidden rounded-lg">
+            <IconCloud iconSlugs={techSlugs} />
           </div>
         );
 
       case "hobbies":
-        const hobbies = [
-          {
-            title: "Open Source Contributions",
-            description: "Active contributor to various open-source projects on GitHub. Love giving back to the community that taught me so much."
-          },
-          {
-            title: "Photography",
-            description: "Passionate about landscape and street photography. Always carrying a camera to capture interesting moments and perspectives."
-          },
-          {
-            title: "Chess",
-            description: "Competitive chess player with a rating of 1800+. Enjoy the strategic thinking and problem-solving aspects of the game."
-          },
-          {
-            title: "Tech Blogging",
-            description: "Write technical articles about software development, sharing learnings and insights with the developer community."
-          },
-          {
-            title: "Hiking & Outdoors",
-            description: "Love exploring nature trails and going on weekend hiking adventures. It's my way to disconnect and recharge."
-          },
-          {
-            title: "Music Production",
-            description: "Dabble in electronic music production during free time. Enjoy experimenting with different sounds and beats."
-          }
-        ];
-
         return (
           <div className="grid md:grid-cols-2 gap-6">
-              {hobbies.map((hobby, index) => (
-                <div key={index} className="border border-border rounded-lg p-6 hover:border-accent transition-smooth">
-                  <div className="flex gap-3 items-start">
-                    <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-gradient-to-br from-accent/20 to-accent/40">
+            {sectionData.hobbies.map((hobby) => (
+              <div key={hobby.id} className="border border-border rounded-lg p-6 hover:border-accent transition-smooth">
+                <div className="flex gap-3 items-start">
+                  <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden">
+                    {hobby.image ? (
+                      <img src={hobby.image} alt={hobby.title} className="w-full h-full object-contain" />
+                    ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <span className="text-2xl text-accent font-bold">{index + 1}</span>
+                        <span className="text-2xl text-accent font-bold">{hobby.id}</span>
                       </div>
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-serif font-semibold mb-3">{hobby.title}</h3>
-                      <p className="text-muted-foreground leading-relaxed">{hobby.description}</p>
-                    </div>
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-serif font-semibold mb-3">{hobby.title}</h3>
+                    <p className="text-muted-foreground leading-relaxed">{hobby.description}</p>
                   </div>
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
         );
 
@@ -410,23 +489,17 @@ const Index = () => {
             <div>
               <h3 className="text-2xl font-serif font-semibold mb-4">Active Projects</h3>
               <div className="space-y-4">
-                <div className="border-l-2 border-accent pl-4 space-y-2">
-                  <h4 className="text-xl font-medium">Portfolio Website</h4>
-                  <p className="text-muted-foreground">Building a modern portfolio showcasing my projects and skills using React and TypeScript.</p>
-                  <div className="flex gap-2">
-                    <span className="px-2 py-1 bg-secondary text-xs rounded">React</span>
-                    <span className="px-2 py-1 bg-secondary text-xs rounded">TypeScript</span>
-                    <span className="px-2 py-1 bg-secondary text-xs rounded">Vite</span>
+                {sectionData.current.projects.map((project, index) => (
+                  <div key={project.id} className={`border-l-2 ${index === 0 ? 'border-accent' : 'border-muted'} pl-4 space-y-2`}>
+                    <h4 className="text-xl font-medium">{project.title}</h4>
+                    <p className="text-muted-foreground">{project.description}</p>
+                    <div className="flex gap-2">
+                      {project.tech.map((tech) => (
+                        <span key={tech} className="px-2 py-1 bg-secondary text-xs rounded">{tech}</span>
+                      ))}
+                    </div>
                   </div>
-                </div>
-                <div className="border-l-2 border-muted pl-4 space-y-2">
-                  <h4 className="text-xl font-medium">Fitness Tracker App</h4>
-                  <p className="text-muted-foreground">Developing a personal workout tracking application with progress analytics.</p>
-                  <div className="flex gap-2">
-                    <span className="px-2 py-1 bg-secondary text-xs rounded">Next.js</span>
-                    <span className="px-2 py-1 bg-secondary text-xs rounded">Prisma</span>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
 
@@ -434,22 +507,12 @@ const Index = () => {
             <div>
               <h3 className="text-2xl font-serif font-semibold mb-4">Gym Progress</h3>
               <div className="grid grid-cols-2 gap-4">
-                <div className="border border-border rounded-lg p-4">
-                  <p className="text-sm text-muted-foreground mb-1">Bench Press</p>
-                  <p className="text-2xl font-bold text-accent">185 lbs</p>
-                </div>
-                <div className="border border-border rounded-lg p-4">
-                  <p className="text-sm text-muted-foreground mb-1">Squat</p>
-                  <p className="text-2xl font-bold text-accent">275 lbs</p>
-                </div>
-                <div className="border border-border rounded-lg p-4">
-                  <p className="text-sm text-muted-foreground mb-1">Deadlift</p>
-                  <p className="text-2xl font-bold text-accent">315 lbs</p>
-                </div>
-                <div className="border border-border rounded-lg p-4">
-                  <p className="text-sm text-muted-foreground mb-1">Workout Streak</p>
-                  <p className="text-2xl font-bold text-accent">21 days</p>
-                </div>
+                {sectionData.current.gymProgress.map((stat, index) => (
+                  <div key={index} className="border border-border rounded-lg p-4">
+                    <p className="text-sm text-muted-foreground mb-1">{stat.label}</p>
+                    <p className="text-2xl font-bold text-accent">{stat.value}</p>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -457,33 +520,38 @@ const Index = () => {
             <div>
               <h3 className="text-2xl font-serif font-semibold mb-4">Currently Reading</h3>
               <div className="space-y-3">
-                <div className="flex gap-4 items-start">
-                  <div className="flex-shrink-0 w-16 h-24 bg-gradient-to-br from-accent/20 to-accent/40 rounded"></div>
-                  <div>
-                    <h4 className="text-lg font-medium">"Clean Code" by Robert C. Martin</h4>
-                    <p className="text-sm text-muted-foreground">Learning best practices for writing maintainable code.</p>
-                    <p className="text-xs text-muted-foreground mt-2">Progress: 60%</p>
+                {sectionData.current.books.map((book, index) => (
+                  <div key={book.id} className="flex gap-4 items-start">
+                    {book.image ? (
+                      <img src={book.image} alt={book.title} className="w-16 h-24 object-contain rounded bg-accent/10" />
+                    ) : (
+                      <div className="flex-shrink-0 w-16 h-24 bg-gradient-to-br from-accent/20 to-accent/40 rounded"></div>
+                    )}
+                    <div>
+                      <h4 className="text-lg font-medium">"{book.title}" by {book.author}</h4>
+                      <p className="text-sm text-muted-foreground">{book.description}</p>
+                      <p className="text-xs text-muted-foreground mt-2">Progress: {book.progress}%</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex gap-4 items-start">
-                  <div className="flex-shrink-0 w-16 h-24 bg-gradient-to-br from-muted/20 to-muted/40 rounded"></div>
-                  <div>
-                    <h4 className="text-lg font-medium">"The Pragmatic Programmer" by Hunt & Thomas</h4>
-                    <p className="text-sm text-muted-foreground">Deep dive into software engineering craftsmanship.</p>
-                    <p className="text-xs text-muted-foreground mt-2">Progress: 30%</p>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
 
             {/* Music */}
             <div>
-              <h3 className="text-2xl font-serif font-semibold mb-4">Recently Enjoyed</h3>
-              <div className="grid grid-cols-3 gap-3">
-                {["Indie Rock", "Electronic", "Jazz", "Classical", "Lofi", "Ambient"].map((genre, i) => (
-                  <div key={i} className="border border-border rounded-lg p-3 text-center hover:border-accent transition-smooth">
-                    <p className="text-sm font-medium">{genre}</p>
-                  </div>
+              <h3 className="text-2xl font-serif font-semibold mb-4">Music I'm Loving</h3>
+              <div className="space-y-3">
+                {sectionData.current.music.map((song, i) => (
+                  <a 
+                    key={i} 
+                    href={song.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="block border border-border rounded-lg p-4 hover:border-accent transition-smooth group"
+                  >
+                    <p className="text-base font-medium group-hover:text-accent">{song.title}</p>
+                    <p className="text-sm text-muted-foreground">{song.artist}</p>
+                  </a>
                 ))}
               </div>
             </div>
@@ -492,11 +560,9 @@ const Index = () => {
             <div>
               <h3 className="text-2xl font-serif font-semibold mb-4">Other Focus Areas</h3>
               <ul className="space-y-2 text-muted-foreground">
-                <li>• Learning advanced TypeScript patterns</li>
-                <li>• Contributing to open-source projects</li>
-                <li>• Improving Spanish language skills</li>
-                <li>• Experimenting with AI/ML tools</li>
-                <li>• Attending local tech meetups</li>
+                {sectionData.current.focusAreas.map((area, i) => (
+                  <li key={i}>• {area}</li>
+                ))}
               </ul>
             </div>
           </div>
@@ -505,120 +571,31 @@ const Index = () => {
       case "extracurriculars":
         return (
           <div className="space-y-6">
-            <div className="border-l-2 border-accent pl-6 space-y-2">
-              <div className="flex gap-4 items-start">
-                <div className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-gradient-to-br from-accent/20 to-accent/40">
-                  <div className="w-full h-full flex items-center justify-center">
-                    <span className="text-2xl text-accent font-bold">1</span>
+            {sectionData.extracurriculars.map((activity, index) => (
+              <div key={activity.id} className={`border-l-2 ${index === 0 ? 'border-accent' : 'border-muted'} pl-6 space-y-2`}>
+                <div className="flex gap-4 items-start">
+                  <div className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden">
+                    {activity.image ? (
+                      <img src={activity.image} alt={activity.title} className="w-full h-full object-contain" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <span className="text-2xl text-accent font-bold">{activity.id}</span>
+                      </div>
+                    )}
                   </div>
-                </div>
-                <div className="flex-1 space-y-2">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-2xl font-serif font-semibold">Student Council President</h3>
-                      <p className="text-accent font-medium">Queen's University</p>
+                  <div className="flex-1 space-y-2">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="text-2xl font-serif font-semibold">{activity.title}</h3>
+                        <p className={index === 0 ? "text-accent font-medium" : "text-muted-foreground font-medium"}>{activity.organization}</p>
+                      </div>
+                      <span className="text-muted-foreground">{activity.period}</span>
                     </div>
-                    <span className="text-muted-foreground">2023 - 2024</span>
+                    <p className="text-muted-foreground leading-relaxed">{activity.description}</p>
                   </div>
-                  <p className="text-muted-foreground leading-relaxed">
-                    Organized campus events and represented student interests. Led initiatives for mental health awareness 
-                    and organized tech workshops for fellow engineering students.
-                  </p>
                 </div>
               </div>
-            </div>
-
-            <div className="border-l-2 border-muted pl-6 space-y-2">
-              <div className="flex gap-4 items-start">
-                <div className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-gradient-to-br from-muted/20 to-muted/40">
-                  <div className="w-full h-full flex items-center justify-center">
-                    <span className="text-2xl text-muted-foreground font-bold">2</span>
-                  </div>
-                </div>
-                <div className="flex-1 space-y-2">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-2xl font-serif font-semibold">Hackathon Organizer</h3>
-                      <p className="text-muted-foreground font-medium">University Tech Fest</p>
-                    </div>
-                    <span className="text-muted-foreground">2023 - Present</span>
-                  </div>
-                  <p className="text-muted-foreground leading-relaxed">
-                    Co-organized annual hackathon with 200+ participants. Managed logistics, secured sponsorships, 
-                    and mentored student teams during 48-hour coding competitions.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="border-l-2 border-muted pl-6 space-y-2">
-              <div className="flex gap-4 items-start">
-                <div className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-gradient-to-br from-muted/20 to-muted/40">
-                  <div className="w-full h-full flex items-center justify-center">
-                    <span className="text-2xl text-muted-foreground font-bold">3</span>
-                  </div>
-                </div>
-                <div className="flex-1 space-y-2">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-2xl font-serif font-semibold">Peer Tutor</h3>
-                      <p className="text-muted-foreground font-medium">Computer Science Department</p>
-                    </div>
-                    <span className="text-muted-foreground">2022 - 2023</span>
-                  </div>
-                  <p className="text-muted-foreground leading-relaxed">
-                    Tutored first-year students in programming fundamentals and data structures. 
-                    Helped over 50 students improve their coding skills and problem-solving abilities.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="border-l-2 border-muted pl-6 space-y-2">
-              <div className="flex gap-4 items-start">
-                <div className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-gradient-to-br from-muted/20 to-muted/40">
-                  <div className="w-full h-full flex items-center justify-center">
-                    <span className="text-2xl text-muted-foreground font-bold">4</span>
-                  </div>
-                </div>
-                <div className="flex-1 space-y-2">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-2xl font-serif font-semibold">Coding Club Co-Founder</h3>
-                      <p className="text-muted-foreground font-medium">Student Led Initiative</p>
-                    </div>
-                    <span className="text-muted-foreground">2022 - Present</span>
-                  </div>
-                  <p className="text-muted-foreground leading-relaxed">
-                    Founded a coding club providing weekly workshops on web development, algorithms, and modern frameworks. 
-                    Grew community to 100+ active members organizing tech talks and collaborative projects.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="border-l-2 border-muted pl-6 space-y-2">
-              <div className="flex gap-4 items-start">
-                <div className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-gradient-to-br from-muted/20 to-muted/40">
-                  <div className="w-full h-full flex items-center justify-center">
-                    <span className="text-2xl text-muted-foreground font-bold">5</span>
-                  </div>
-                </div>
-                <div className="flex-1 space-y-2">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-2xl font-serif font-semibold">Mentorship Program Volunteer</h3>
-                      <p className="text-muted-foreground font-medium">Tech Career Center</p>
-                    </div>
-                    <span className="text-muted-foreground">2023 - Present</span>
-                  </div>
-                  <p className="text-muted-foreground leading-relaxed">
-                    Mentor first-year CS students providing guidance on academics, career paths, and internship preparation. 
-                    Help bridge the gap between university learning and industry expectations.
-                  </p>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         );
 
@@ -814,26 +791,47 @@ const Index = () => {
                   : "pointer-events-auto scale-100 opacity-100"
               }`}
             >
-              {sections.map((section) => (
-                <div
-                  key={section.id}
-                  ref={(node) => {
-                    cardRefs.current[section.id] = node;
-                  }}
-                  className={`transition-all duration-500 ease-out rounded-[24px] ${
-                    section.id === "experience" || section.id === "extracurriculars" ? "md:col-span-2 lg:col-span-2" : ""
-                  }`}
-                >
-                  <SectionCard
-                    title={section.title}
-                    metric={section.metric}
-                    metricLabel={section.metricLabel}
-                    icon={section.icon}
-                    itemCount={section.itemCount}
-                    onClick={() => handleCardClick(section.id)}
-                  />
-                </div>
-              ))}
+              {sections.map((section) => {
+                // Extract images from sectionData based on section type
+                const getImages = () => {
+                  switch(section.id) {
+                    case 'experience':
+                      return sectionData.experience.map(item => item.image);
+                    case 'projects':
+                      return sectionData.projects.map(item => item.image);
+                    case 'hobbies':
+                      return sectionData.hobbies.map(item => item.image);
+                    case 'extracurriculars':
+                      return sectionData.extracurriculars.map(item => item.image);
+                    case 'current':
+                      return []; // No image cascade for current section
+                    default:
+                      return [];
+                  }
+                };
+
+                return (
+                  <div
+                    key={section.id}
+                    ref={(node) => {
+                      cardRefs.current[section.id] = node;
+                    }}
+                    className={`transition-all duration-500 ease-out rounded-[24px] ${
+                      section.id === "experience" || section.id === "extracurriculars" ? "md:col-span-2 lg:col-span-2" : ""
+                    }`}
+                  >
+                    <SectionCard
+                      title={section.title}
+                      metric={section.metric}
+                      metricLabel={section.metricLabel}
+                      icon={section.icon}
+                      itemCount={section.itemCount}
+                      images={getImages()}
+                      onClick={() => handleCardClick(section.id)}
+                    />
+                  </div>
+                );
+              })}
             </div>
 
             {visibleSection && overlayStyle && (

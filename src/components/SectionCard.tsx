@@ -7,11 +7,13 @@ interface SectionCardProps {
   metricLabel: string;
   icon: LucideIcon;
   itemCount: number;
+  images?: (string | null)[];
   onClick: () => void;
 }
 
-export const SectionCard = ({ title, metric, metricLabel, icon, itemCount, onClick }: SectionCardProps) => {
+export const SectionCard = ({ title, metric, metricLabel, icon, itemCount, images, onClick }: SectionCardProps) => {
   const Icon = icon;
+  const imageCount = images ? Math.min(images.length, 5) : Math.min(itemCount, 5);
 
   return (
     <Card
@@ -26,15 +28,23 @@ export const SectionCard = ({ title, metric, metricLabel, icon, itemCount, onCli
           
           {/* Cascaded Images */}
           <div className="flex -space-x-3 items-center">
-            {Array.from({ length: Math.min(itemCount, 5) }).map((_, i) => (
+            {Array.from({ length: imageCount }).map((_, i) => (
               <div
                 key={i}
                 className="relative w-8 h-8 rounded-full border-2 border-card overflow-hidden shadow-md"
-                style={{ zIndex: Math.min(itemCount, 5) - i }}
+                style={{ zIndex: imageCount - i }}
               >
-                <div className="w-full h-full bg-gradient-to-br from-accent/40 to-accent/60 flex items-center justify-center">
-                  <span className="text-xs text-accent font-bold">{i + 1}</span>
-                </div>
+                {images && images[i] ? (
+                  <img 
+                    src={images[i]!} 
+                    alt={`${title} ${i + 1}`}
+                    className="w-full h-full object-contain bg-accent/10"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-accent/40 to-accent/60 flex items-center justify-center">
+                    <span className="text-xs text-accent font-bold">{i + 1}</span>
+                  </div>
+                )}
               </div>
             ))}
           </div>
