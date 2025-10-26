@@ -13,7 +13,7 @@ export const SectionModal = ({ isOpen, onClose, title, children }: SectionModalP
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center rounded-lg">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-background/95 backdrop-blur-sm animate-in fade-in duration-300"

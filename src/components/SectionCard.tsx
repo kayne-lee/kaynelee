@@ -1,24 +1,42 @@
-import { ReactNode } from "react";
+import type { LucideIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 interface SectionCardProps {
   title: string;
   metric: string;
   metricLabel: string;
-  icon: ReactNode;
+  icon: LucideIcon;
+  itemCount: number;
   onClick: () => void;
 }
 
-export const SectionCard = ({ title, metric, metricLabel, icon, onClick }: SectionCardProps) => {
+export const SectionCard = ({ title, metric, metricLabel, icon, itemCount, onClick }: SectionCardProps) => {
+  const Icon = icon;
+
   return (
     <Card
       onClick={onClick}
-      className="group relative overflow-hidden cursor-pointer transition-smooth hover:shadow-lg hover:-translate-y-1 border-border bg-card"
+      className="group relative overflow-hidden cursor-pointer transition-smooth hover:shadow-lg hover:-translate-y-1 border-border bg-card rounded-[24px]"
     >
-      <div className="p-8">
-        <div className="flex items-start justify-between mb-6">
+      <div className="p-6 md:p-7 lg:p-8">
+        <div className="flex items-start justify-between mb-5 md:mb-6">
           <div className="text-accent transition-smooth group-hover:scale-110">
-            {icon}
+            <Icon className="h-8 w-8" />
+          </div>
+          
+          {/* Cascaded Images */}
+          <div className="flex -space-x-3 items-center">
+            {Array.from({ length: Math.min(itemCount, 5) }).map((_, i) => (
+              <div
+                key={i}
+                className="relative w-8 h-8 rounded-full border-2 border-card overflow-hidden shadow-md"
+                style={{ zIndex: Math.min(itemCount, 5) - i }}
+              >
+                <div className="w-full h-full bg-gradient-to-br from-accent/40 to-accent/60 flex items-center justify-center">
+                  <span className="text-xs text-accent font-bold">{i + 1}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
         
