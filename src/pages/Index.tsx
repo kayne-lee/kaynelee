@@ -393,7 +393,7 @@ const Index = () => {
                       </div>
                     )}
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 flex-shrink-0">
                     <h3 className="text-2xl font-serif font-semibold mb-2">{project.title}</h3>
                     <p className="text-muted-foreground mb-4 leading-relaxed">{project.description}</p>
                     <div className="flex flex-wrap gap-2 mb-3">
@@ -729,9 +729,9 @@ const Index = () => {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-background flex flex-col">
-      <header className="border-b border-border bg-card/70 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-6 md:px-8 py-6">
+    <div className="h-screen overflow-y-auto bg-background min-h-screen flex flex-col">
+      <header className="border-b flex-shrink-0 border-border bg-card/70 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 md:py-6">
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-4 md:gap-6">
               <div className="relative h-16 w-16 overflow-hidden rounded-full border border-border shadow-md">
@@ -778,11 +778,11 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="flex-1">
+      <main className="flex-1 flex-shrink-0">
         <div className="max-w-7xl mx-auto h-full px-6 md:px-8 py-10">
           <div
             ref={gridRef}
-            className="relative h-full overflow-hidden rounded-3xl border border-border bg-card/60 p-6 shadow-lg"
+            className="relative h-full overflow-hidden rounded-3xl border border-border bg-card/60 p-3 md:p-6 shadow-lg"
           >
             <div
               className={`grid h-full gap-3 md:gap-4 lg:gap-5 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr transition-all duration-500 ease-out ${
