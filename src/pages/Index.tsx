@@ -327,12 +327,10 @@ const Index = () => {
                     )}
                   </div>
                   <div className="flex-1 space-y-2">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="text-2xl font-serif font-semibold">{job.title}</h3>
-                        <p className={index === 0 ? "text-accent font-medium" : "text-muted-foreground font-medium"}>{job.company}</p>
-                      </div>
-                      <span className="text-muted-foreground">{job.period}</span>
+                    <div>
+                      <h3 className="text-2xl font-serif font-semibold">{job.title}</h3>
+                      <p className={index === 0 ? "text-accent font-medium" : "text-muted-foreground font-medium"}>{job.company}</p>
+                      <span className="text-muted-foreground text-sm">{job.period}</span>
                     </div>
                     <p className="text-muted-foreground leading-relaxed">{job.description}</p>
                   </div>
@@ -584,12 +582,10 @@ const Index = () => {
                     )}
                   </div>
                   <div className="flex-1 space-y-2">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="text-2xl font-serif font-semibold">{activity.title}</h3>
-                        <p className={index === 0 ? "text-accent font-medium" : "text-muted-foreground font-medium"}>{activity.organization}</p>
-                      </div>
-                      <span className="text-muted-foreground">{activity.period}</span>
+                    <div>
+                      <h3 className="text-2xl font-serif font-semibold">{activity.title}</h3>
+                      <p className={index === 0 ? "text-accent font-medium" : "text-muted-foreground font-medium"}>{activity.organization}</p>
+                      <span className="text-muted-foreground text-sm">{activity.period}</span>
                     </div>
                     <p className="text-muted-foreground leading-relaxed">{activity.description}</p>
                   </div>
